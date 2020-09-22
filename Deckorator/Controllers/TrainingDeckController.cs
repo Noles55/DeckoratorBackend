@@ -16,9 +16,9 @@ namespace Deckorator.Controllers
             this.deckRetriever = deckRetriever;
         }
 
-        public IActionResult RandomDeck()
+        public async Task<IActionResult> RandomDeck()
         {
-            ViewData["Message"] = deckRetriever.GetRandomDeckUrl();
+            ViewData["Message"] = await deckRetriever.GetRandomDeckUrl();
             return View();
         }
     }

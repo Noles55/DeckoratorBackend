@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Net.Http;
 using Deckorator.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MtgApiManager.Lib.Service;
-using Newtonsoft.Json;
 
 namespace Deckorator
 {
@@ -28,7 +22,6 @@ namespace Deckorator
             services.AddMvc();
             services.AddSingleton<DeckRetriever>();
             services.AddSingleton<HttpClient>();
-            services.AddSingleton<CardService>();
            
         }
 

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Deckorator.Services
 {
@@ -19,17 +20,31 @@ namespace Deckorator.Services
             this.mtgApi = mtgApi;
         }
 
-        public string GetRandomDeckUrl()
+        //public string GetRandomDeckUrl()
+        //{
+        //    Exceptional<List<Card>> creaturesRequest = mtgApi.Where(x => x.GameFormat, "Commander")
+        //                     .Where(x => x.SuperTypes, new string[] { "Legendary", "Creature" })
+        //                     .All();
+
+        //    Exceptional<List<Card>> planeswalkersRequest = mtgApi.Where(x => x.GameFormat, "Commander").Where(x => x.SuperTypes, new string[] { "Planeswalker" }).Where(x => x.Text, "can be your commander").All();
+  
+
+        //    if (creaturesRequest.IsSuccess && planeswalkersRequest.IsSuccess)
+        //    {
+        //        creaturesRequest.Value.AddRange(planeswalkersRequest.Value);
+        //        List<Card> commanders = new List<Card>(creaturesRequest.Value);
+        //        Random rng = new Random();
+
+        //        return JsonConvert.SerializeObject(commanders[rng.Next(commanders.Count)]);
+        //    }
+        //    else throw new Exception();
+        //}
+        
+        public async Task<string> GetRandomDeckUrl()
         {
-            Exceptional<List<Card>> result = mtgApi.Where(x => x.GameFormat, "Commander")
-                             .Where(x => x.SuperTypes, new string[] { "Legendary", "Creature" })
-                             .All();
+            var response = await httpClient.GetAsync("https://api.scryfall.com/cards/random?q=is%3Acommander");
             
-            if (result.IsSuccess)
-            {
-                return JsonConvert.SerializeObject(result.Value);
-            }
-            else throw new Exception();
+            return await response.Content.ReadAsStringAsync();
         }
     }
 }
