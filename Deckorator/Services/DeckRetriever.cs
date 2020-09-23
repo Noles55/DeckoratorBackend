@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -15,9 +17,11 @@ namespace Deckorator.Services
 
         public async Task<string> GetRandomDeckUrl()
         {
-            var response = await httpClient.GetAsync("https://api.scryfall.com/cards/random?q=is%3Acommander");
-            
-            return await response.Content.ReadAsStringAsync();
+            HttpResponseMessage response = await httpClient.GetAsync("https://api.scryfall.com/cards/random?q=is%3Acommander");
+            string json = await response.Content.ReadAsStringAsync();
+            JObject cardDict = JsonConvert.DeserializeObject<JObject>(json);
+
+            return cardDict.GetValue("name").ToString();
         }
     }
 }
