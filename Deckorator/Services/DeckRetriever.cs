@@ -42,7 +42,7 @@ namespace Deckorator.Services
             html.LoadHtml(htmlString);
 
             HtmlNodeCollection nodes = html.DocumentNode.SelectNodes("//h3[@class='name deck-wide-header']/a");
-
+            
             return "";
         }
     }
