@@ -20,7 +20,7 @@ namespace Deckorator
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddSingleton<DeckRetriever>();
+            services.AddSingleton<DeckService>();
             services.AddSingleton<HttpClient>();
            
         }

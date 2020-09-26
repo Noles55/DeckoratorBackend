@@ -8,43 +8,50 @@ using HtmlAgilityPack;
 
 namespace Deckorator.Services
 {
-    public class DeckRetriever
+    public class DeckService
     {
         private readonly HttpClient httpClient;
-        private readonly string deckSourceQuery = "https://tappedout.net/mtg-decks/search/?general={0}&page={1}";
-        private readonly int startingPage = 20;
+        private readonly string source = "https://tappedout.net{0}";
+        private readonly string deckListQuery = "/mtg-decks/search/?general={0}&page={1}";
+        private readonly int startingPage = 5;
 
-        public DeckRetriever(HttpClient httpClient)
+        public DeckService(HttpClient httpClient)
         {
             this.httpClient = httpClient;
         }
 
-        public async Task<string> GetRandomDeckUrl()
+        public async Task<KeyValuePair<string, string>> GetRandomDeckUrl()
         {
             HttpResponseMessage commanderResponse = await httpClient.GetAsync("https://api.scryfall.com/cards/random?q=is%3Acommander");
             string json = await commanderResponse.Content.ReadAsStringAsync();
             string commander = JsonConvert.DeserializeObject<JObject>(json).GetValue("name").ToString().ToLower().Replace("\"", String.Empty).Replace(",", String.Empty).Replace(" ", "-");
             Random random = new Random();
-
+            
             HttpResponseMessage decksResponse;
             int currMaxPage = startingPage;
             do
             {
-                string decksQuery = string.Format(deckSourceQuery, new string[] { commander, (random.Next(currMaxPage) + 1).ToString() });
+                string decksQuery = string.Format(deckListQuery, new string[] { commander, (random.Next(currMaxPage) + 1).ToString() });
                 currMaxPage /= 2;
-                Console.WriteLine("TappedOut query: " + decksQuery);
-                decksResponse = await httpClient.GetAsync(decksQuery);
+                Console.WriteLine("TappedOut query: " + string.Format(source, decksQuery));
+                decksResponse = await httpClient.GetAsync(string.Format(source, decksQuery));
             } while (!decksResponse.IsSuccessStatusCode && currMaxPage > 0);
-           
+
             string htmlString = await decksResponse.Content.ReadAsStringAsync();
 
             HtmlDocument html = new HtmlDocument();
             html.LoadHtml(htmlString);
 
             HtmlNodeCollection nodes = html.DocumentNode.SelectNodes("//h3[@class='name deck-wide-header']/a");
-            
-            return "";
+            if (nodes == null) return KeyValuePair.Create<string, string>(commander, "error");
+            return KeyValuePair.Create<string, string>(commander, string.Format(source, nodes[random.Next(nodes.Count)].GetAttributeValue("href", "Error")));
+        }
+
+        public async Task<bool> SaveDeck(string deckUrl, double rating)
+        {
+            HttpResponseMessage deckResponse = await httpClient.GetAsync(deckUrl + "?fmt=multiverse");
+            Console.WriteLine(await deckResponse.Content.ReadAsStringAsync());
+            return true;
         }
     }
 }
-//*[@id="body"]/div[7]/div/div[1]/div[9]/div/div[2]/h3/a
