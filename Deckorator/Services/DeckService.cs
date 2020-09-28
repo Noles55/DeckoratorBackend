@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using System.IO;
+using Deckorator.Models;
 
 namespace Deckorator.Services
 {
@@ -13,7 +15,7 @@ namespace Deckorator.Services
         private readonly HttpClient httpClient;
         private readonly string source = "https://tappedout.net{0}";
         private readonly string deckListQuery = "/mtg-decks/search/?general={0}&page={1}";
-        private readonly int startingPage = 5;
+        private readonly int startingPage = 1;
 
         public DeckService(HttpClient httpClient)
         {
@@ -24,7 +26,7 @@ namespace Deckorator.Services
         {
             HttpResponseMessage commanderResponse = await httpClient.GetAsync("https://api.scryfall.com/cards/random?q=is%3Acommander");
             string json = await commanderResponse.Content.ReadAsStringAsync();
-            string commander = JsonConvert.DeserializeObject<JObject>(json).GetValue("name").ToString().ToLower().Replace("\"", String.Empty).Replace(",", String.Empty).Replace(" ", "-");
+            string commander = JsonConvert.DeserializeObject<JObject>(json).GetValue("name").ToString().ToLower().Replace("\"", String.Empty).Replace(",", String.Empty).Replace("\'", String.Empty).Replace(" ", "-");
             Random random = new Random();
             
             HttpResponseMessage decksResponse;
@@ -49,8 +51,22 @@ namespace Deckorator.Services
 
         public async Task<bool> SaveDeck(string deckUrl, double rating)
         {
-            HttpResponseMessage deckResponse = await httpClient.GetAsync(deckUrl + "?fmt=multiverse");
-            Console.WriteLine(await deckResponse.Content.ReadAsStringAsync());
+            HttpResponseMessage deckResponse = await httpClient.GetAsync(deckUrl + "?fmt=txt");
+            Deck deck = new Deck(deckResponse.Content.Headers.ContentDisposition.FileName, deckUrl, rating);
+
+            string deckString = await deckResponse.Content.ReadAsStringAsync();
+            using (StringReader reader = new StringReader(deckString))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    string trimmed = line.Trim();
+                    if (trimmed.Length == 0) continue;
+                    deck.Cards.Add(trimmed);
+                }
+            }
+
+            Console.WriteLine(deck.ToString());
             return true;
         }
     }

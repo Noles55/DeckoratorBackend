@@ -20,6 +20,7 @@ namespace Deckorator.Controllers
         {
             KeyValuePair<string, string> deckInfo = await deckService.GetRandomDeckUrl();
 
+            if (deckInfo.Value.Equals("error")) return RedirectToAction("RandomDeck");
             ViewData["Commander"] = deckInfo.Key;
             ViewData["DeckLink"] = deckInfo.Value;
           
@@ -33,6 +34,5 @@ namespace Deckorator.Controllers
             await deckService.SaveDeck(deckUrl, rating);
             return RedirectToAction("RandomDeck");
         }
-
     }
 }
