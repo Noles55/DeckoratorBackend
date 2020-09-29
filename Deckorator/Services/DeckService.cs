@@ -62,7 +62,7 @@ namespace Deckorator.Services
                 {
                     string trimmed = line.Trim();
                     if (trimmed.Length == 0) continue;
-                    deck.Cards.Add(trimmed);
+                    deck.Cards.Add(new Card(trimmed));
                 }
             }
 

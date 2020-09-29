@@ -1,7 +1,9 @@
 ﻿using System.Net.Http;
+using Deckorator.Models;
 using Deckorator.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,7 +24,9 @@ namespace Deckorator
             services.AddMvc();
             services.AddSingleton<DeckService>();
             services.AddSingleton<HttpClient>();
-           
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer("Server=tcp:deckorator-server.database.windows.net,1433;Initial Catalog=TrainingData;Persist Security Info=False;User ID=admin-user;Password={};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
