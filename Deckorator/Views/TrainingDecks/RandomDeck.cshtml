@@ -7,11 +7,14 @@
 <h2>TrainingDeck</h2>
 <h3>
     <a href=@ViewData["DeckLink"] target="_blank">@ViewData["Commander"]</a>
-    @using (Html.BeginForm("RateDeck", "TrainingDeck", FormMethod.Post))
+    @using (Html.BeginForm("RateDeck", "TrainingDecks", FormMethod.Post))
     {
         <input type="number" id="rating" name="rating" min="0" max="10">
         <input type="hidden" id="deckUrl" name="deckUrl" value=@ViewData["DeckLink"]>
         <button>Rate</button>
     }
 </h3>
+<h4>
+    <a href="/TrainingDecks/All" target="_blank">View Saved Decks</a>
+</h4>
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Deckorator.Models;
 
@@ -12,7 +8,7 @@ namespace Deckorator.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("RandomDeck", "TrainingDecks");
         }
 
         public IActionResult About()

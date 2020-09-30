@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Deckorator.Models;
 using Deckorator.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Deckorator.Controllers
 {
-    public class TrainingDeckController : Controller
+    public class TrainingDecksController : Controller
     {
         private readonly DeckService deckService;
 
-        public TrainingDeckController(DeckService deckRetriever)
+        public TrainingDecksController(DeckService deckRetriever)
         {
             this.deckService = deckRetriever;
         }
@@ -25,6 +26,11 @@ namespace Deckorator.Controllers
             ViewData["DeckLink"] = deckInfo.Value;
           
             return View();
+        }
+
+        public IActionResult All()
+        {
+            return View(new TrainingDeckList(deckService.getTrainingDecks()));
         }
 
         [HttpPost]

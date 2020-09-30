@@ -1,0 +1,22 @@
+﻿@model TrainingDeckList
+
+@{
+    ViewData["Title"] = "All";
+}
+
+<table class="deck-table">
+    <tr>
+        <td>Deck</td>
+        <td>Rating</td>
+    </tr>
+    @foreach(Deck deck in Model.Decks)
+    {
+        <tr>
+            <td>
+                <a href=@deck.Url target="_blank">@deck.Name.Replace(".txt", String.Empty)</a>
+            </td>
+            <td>@deck.Rating</td>
+        </tr>
+    }
+</table>
+

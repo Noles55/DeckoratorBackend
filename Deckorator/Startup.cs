@@ -22,9 +22,9 @@ namespace Deckorator
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddSingleton<DeckService>();
-            services.AddSingleton<HttpClient>();
-            services.AddDbContext<AppDbContext>(options => options.UseSqlServer("Server=tcp:deckorator-server.database.windows.net,1433;Initial Catalog=TrainingData;Persist Security Info=False;User ID=admin-user;Password={};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
+            services.AddTransient<DeckService>();
+            services.AddTransient<HttpClient>();
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer("Server=tcp:deckorator-server.database.windows.net,1433;Initial Catalog=TrainingData;Persist Security Info=False;User ID=admin-user;Password=;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
 
 
         }
